@@ -8,9 +8,8 @@
 
 #include <uapi/linux/incrementalfs.h>
 
+#include "sysfs.h"
 #include "vfs.h"
-
-#define INCFS_NODE_FEATURES "features"
 
 static struct file_system_type incfs_fs_type = {
 	.owner = THIS_MODULE,
@@ -98,20 +97,20 @@ static int __init init_incfs_module(void)
 {
 	int err = 0;
 
-	err = init_sysfs();
+	err = incfs_init_sysfs();
 	if (err)
 		return err;
 
 	err = register_filesystem(&incfs_fs_type);
 	if (err)
-		cleanup_sysfs();
+		incfs_cleanup_sysfs();
 
 	return err;
 }
 
 static void __exit cleanup_incfs_module(void)
 {
-	cleanup_sysfs();
+	incfs_cleanup_sysfs();
 	unregister_filesystem(&incfs_fs_type);
 }
 
